@@ -4,11 +4,60 @@
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Primera Pre Entrega - José Ulloa Díaz</title>
-   <link rel="stylesheet" href="style.css">
+   <title>Segunda Pre Entrega - José Ulloa Díaz</title>
 </head>
-<body>
+<body class="uk-flex uk-flex-middle uk-flex-center uk-padding-small" uk-height-viewport>
+   <main>
+      <div class="uk-container">
+         <div class="uk-text-center" uk-margin="margin: uk-margin-small-top">
+            <h1 class="uk-margin-remove-bottom uk-color-primary">Conversor de divisas</h1>
+            <span class="uk-h3">PreEntrega2 José Ulloa Díaz</span>
+         </div>
+         <div class="uk-card uk-card-default uk-padding uk-border-rounded uk-margin-medium-top">
+            <div class="uk-grid-small uk-child-width-auto uk-flex-middle" uk-grid="">
+               <!-- Entrada -->
+               <div>
+                  <input id="inputValor" type="number" max="100000" min="1" value="1" class="uk-input">
+               </div>
+               <!-- Entrada -->
+               <div>
+                  <select id="inputDivisaEntrada" class="uk-select">
+                     <option value="us" selected>Dolares</option>
+                     <option value="clp">Pesos Chilenos</option>
+                     <option value="jpy">Yenes Japoneses</option>
+                  </select>
+               </div>
+               <!-- Icono -->
+               <span uk-icon="icon: arrow-right"></span>
+               <!-- Salida -->
+               <div>
+                  <select id="inputDivisaSalida" class="uk-select">
+                     <option value="us">Dolares</option>
+                     <option value="clp" selected>Pesos Chilenos</option>
+                     <option value="jpy">Yenes Japoneses</option>
+                  </select>
+               </div>
+               <div class="uk-text-center">
+                  <a href="#" id="botonTransformar" class="uk-button uk-button-primary uk-width-1-1">Convertir!</a>
+               </div>
+            </div>
+            <hr>
+            <span>Resultado: <em id="resultadoImpreso"></em></span>
+            <hr>
+            <h3>Historial de resultados</h3>
+            <!-- Oculto -->
+            <ol id="listaHistorialResultado" class="uk-overflow-auto uk-list" style="max-height: 200px">
+               <span>Aqui podrás ver el historial de tus resultados recientes</span>
+            </ol>
+         </div>
+      </div>
+   </main>
+   <!-- Css/Js framework visual -->
+   <!-- UIkit CSS -->
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.15.10/dist/css/uikit.min.css" />
+   <!-- UIkit JS -->
+   <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.10/dist/js/uikit.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.10/dist/js/uikit-icons.min.js"></script>
    <script src="app.js"></script>
-   <a href="index.html">Volver a convertir</a>
 </body>
 </html>
