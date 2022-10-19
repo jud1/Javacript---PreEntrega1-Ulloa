@@ -7,81 +7,120 @@ const inputDivisaSalida = document.getElementById('inputDivisaSalida')
 const botonTransformar = document.getElementById('botonTransformar')
 const resultadoImpreso = document.getElementById('resultadoImpreso')
 
-// [WIP: array de resultados por localstorage]
-const historialResultado = [];
+// Definimos las variables para la lista guardada en local storage
+const historialResultado = JSON.parse(localStorage.getItem('historial')) ?? []
 const olHistorialResultado = document.getElementById('listaHistorialResultado')
+const maxHistorial = 20
 
-// class para los objetos divisa
+// [Imprimir en el DOM] Funcion para poder detonarla al iniciar la app si es que hay resultados de sesiones anteriores
+const imprimirHistorial = lista => {
+   // Vaciamos el ul
+   olHistorialResultado.innerHTML = ''
+
+   lista.forEach( item => {
+
+      // creamos el elemento y lo almacenamos en una variable
+      let liElemento = document.createElement('li')
+      
+      // Le imprimimos el resultado dentro del li como texto html
+      liElemento.textContent = `${item.resultado} --- ${new Date(item.fecha).toLocaleString()}`
+      
+      // Lo imprimimos con prepend para que siempre quede antes del siguiente y muestre siempre los ultimos primeros
+      olHistorialResultado.prepend(liElemento)
+   }); 
+}
+
+// Ejecutamos la fn anterior solo si el array es mayor a 0 (al iniciar la app)
+historialResultado.length > 0 && imprimirHistorial(historialResultado)
+
+// Class para los objetos divisa
 class Divisa {
-   constructor(nombre, abreviatura, valorReferencia){
+   constructor(nombre, abreviatura, valorReferencia, stringLocal, stringLocalExt){
       this.nombre = nombre
       this.abreviatura = abreviatura
       this.valorReferencia = valorReferencia
+      this.stringLocal = stringLocal
+      this.stringLocalExt = stringLocalExt
    }
 }
 
 // Array de objetos para aplicar metodos (basado en la clase anterior)
 const divisas = [
-   new Divisa('Peso Chileno', 'clp', 938),
-   new Divisa('Dolar', 'us', 1),
-   new Divisa('Yen Japones', 'jpy', 145)
+   new Divisa('Peso Chileno', 'clp', 938, 'es-CL', {style:"currency", currency:"CLP"}),
+   new Divisa('Dolar', 'us', 1, 'en-US', {style:"currency", currency:"USD"}),
+   new Divisa('Yen Japones', 'jpy', 145, 'ja-JP', {style:"currency", currency:"JPY"})
 ]
 
-// funcion que calcula el resultado
+// Funcion que calcula el resultado en string
 const resultado = function(valor, entrada, salida){
    let resultado = valor*salida.valorReferencia/entrada.valorReferencia
-   return `${valor} ${entrada.abreviatura} = ${resultado} ${salida.abreviatura}`
+   return `
+      ${valor.toLocaleString(entrada.stringLocal, entrada.stringLocalExt)} 
+      ${entrada.abreviatura} 
+      = 
+      ${resultado.toLocaleString(salida.stringLocal, salida.stringLocalExt)} 
+      ${salida.abreviatura}
+   `
 }
 
-// funcion para buscar la divisa mediante un find en el array de objetos
+// Funcion para buscar la divisa mediante un find en el array de objetos
 const buscarObjDivisa = function(abbreviatura){
    return divisas.filter( (el) => el.abreviatura.includes(abbreviatura) )
 }
 
-// Event listener para escuchar el boton y al click dar el resultado
-botonTransformar.addEventListener('click', function(evt){
-   //Prevenimos el redireccionamiento del anchor
+// Funcion de ejecucion del progra,a
+const accion = evt => {
+   // Prevenimos el redireccionamiento del anchor
    evt.preventDefault()
    
-   // Si el input esta vacio (input type number)
-   if (inputValor.value === ""){
-      alert('Numero invalido, Por favor ingresa un NUMERO')
+   // Obtenemos mediante find el objecto que selecciono en el select
+   let objDivisa1 = buscarObjDivisa(inputDivisaEntrada.value)[0]
+   let objDivisa2 = buscarObjDivisa(inputDivisaSalida.value)[0]
+   
+   // Si el input es erroneo
+   if (inputValor.value === "" || inputValor.value <= 0){
+      UIkit.notification('Numero invalido, Por favor ingresa un numero mayor a 0', { status:'danger' })
+   }
+
+   // Si las divisas son las mismas
+   else if (objDivisa1 === objDivisa2) {
+      UIkit.notification('Las divisas son las mismas', { status:'danger' })
    }
    
-   // Si el valor es menor o igual a 0, damos error
-   else if (inputValor.value <= 0) {
-      alert('Ingresa un numero MAYOR a 0')
-   }
-
    // Ejecutamos si paso todos los errores
    else {
-      //Obtenemos mediante find el objecto que selecciono en el select
-      let objDivisa1 = buscarObjDivisa(inputDivisaEntrada.value)[0]
-      let objDivisa2 = buscarObjDivisa(inputDivisaSalida.value)[0]
-
-      // Invocamos a la funcion de calculo e creacion del string de resultado
+      // Invocamos a la funcion de calculo y creacion del string de resultado
       let resultadoFinal = resultado(Number(inputValor.value), objDivisa1, objDivisa2)
       
       // Imprimir el resultado en pantalla
       resultadoImpreso.textContent = resultadoFinal
+   
+      /* Comenzamos con el historial */
 
-      // Guardar el resultado en un array para proximamente guardarlo en un localstorage
-      historialResultado.push(resultadoFinal)
-
-      // Limpiamos lo que haya dentro del historial (inner del ul)
-      olHistorialResultado.innerHTML = ''
+      // Si hay mas de la cantidad permitida de resultados, eliminar el mas viejo
+      historialResultado.length >= maxHistorial &&  historialResultado.shift()
+   
+      // luego pusheamos un objeto en el array
+      historialResultado.push({resultado: resultadoFinal, fecha: Date.now()}) //.toLocaleString()
       
-      // forEach por cada resultado en el array imprimiendolo como li dentro del ul
-      historialResultado.forEach( (historia)=> {
-         // creamos el elemento y lo almacenamos en una varable
-         let liElemento = document.createElement('li')
-         
-         //le imprimimos el resultado dentro del li como texto html
-         liElemento.textContent = historia
-         
-         // Lo imprimimos con prepend para que siempre quede antes del siguiente y muestre siempre los ultimos primeros
-         olHistorialResultado.prepend(liElemento)
-      })     
-
+      // Reescribimos el localStorage
+      localStorage.setItem('historial', JSON.stringify(historialResultado))
+   
+      // reimprimimos los resultados si es que hay
+      historialResultado.length > 0 && imprimirHistorial(historialResultado)
+   
    } 
+
+}
+
+// Event listener para escuchar el boton y al click dar el resultado
+botonTransformar.addEventListener('click', function(evt){
+   accion(evt)
+})
+
+// Tambien escuchamos al enter 
+window.addEventListener('keyup', function(evt){
+   if (evt.key === 'Enter' || evt.keyCode === 13) {
+      accion(evt)
+   }
 })
