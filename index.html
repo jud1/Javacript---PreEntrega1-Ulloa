@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Segunda Pre Entrega - José Ulloa Díaz</title>
 </head>
+
 <body class="uk-flex uk-flex-middle uk-flex-center uk-padding-small" uk-height-viewport>
    <main>
       <div class="uk-container">
@@ -17,14 +19,14 @@
             <div class="uk-grid-small uk-child-width-auto uk-flex-middle" uk-grid="">
                <!-- Entrada -->
                <div>
-                  <input id="inputValor" type="number" max="100000" min="1" value="1" class="uk-input">
+                  <input id="inputMonto" type="number" max="100000" min="1" value="1" class="uk-input">
                </div>
                <!-- Entrada -->
                <div>
                   <select id="inputDivisaEntrada" class="uk-select">
-                     <option value="us" selected>Dolares</option>
-                     <option value="clp">Pesos Chilenos</option>
-                     <option value="jpy">Yenes Japoneses</option>
+                     <option value="USD" selected>Dolares</option>
+                     <option value="CLP">Pesos Chilenos</option>
+                     <option value="JPY">Yenes Japoneses</option>
                   </select>
                </div>
                <!-- Icono -->
@@ -32,9 +34,9 @@
                <!-- Salida -->
                <div>
                   <select id="inputDivisaSalida" class="uk-select">
-                     <option value="us">Dolares</option>
-                     <option value="clp" selected>Pesos Chilenos</option>
-                     <option value="jpy">Yenes Japoneses</option>
+                     <option value="USD">Dolares</option>
+                     <option value="CLP" selected>Pesos Chilenos</option>
+                     <option value="JPY">Yenes Japoneses</option>
                   </select>
                </div>
                <div class="uk-text-center">
@@ -46,9 +48,82 @@
             <hr>
             <h3>Historial de resultados</h3>
             <!-- Oculto -->
-            <ol id="listaHistorialResultado" class="uk-overflow-auto uk-list" style="max-height: 200px">
+            <ol class="uk-overflow-auto uk-list" style="max-height: 200px">
                <span>Aqui podrás ver el historial de tus resultados recientes</span>
             </ol>
+            <!-- Tabla -->
+            <div class="uk-overflow-auto uk-height-medium" style="border: 1px solid rgb(226, 226, 226)">
+               <table class="uk-table uk-table-small uk-table-divider uk-table-striped uk-table-hover uk-table-responsive">
+                  <thead>
+                     <tr>
+                        <th>Entrada</th>
+                        <th></th>
+                        <th>Salida</th>
+                        <th>Conversion</th>
+                        <th>Fecha</th>
+                        <th>Accion</th>
+                     </tr>
+                  </thead>
+                  <tbody id="tablaHistorial">
+                     <tr>
+                        <td>Table Data</td>
+                        <td>&rarr;</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                     </tr>
+                     <tr>
+                        <td>Table Data</td>
+                        <td>&rarr;</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                     </tr>
+                     <tr>
+                        <td>Table Data</td>
+                        <td>&rarr;</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                     </tr>
+                     <tr>
+                        <td>Table Data</td>
+                        <td>&rarr;</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                     </tr>
+                     <tr>
+                        <td>Table Data</td>
+                        <td>&rarr;</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                     </tr>
+                     <tr>
+                        <td>Table Data</td>
+                        <td>&rarr;</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                     </tr>
+                     <tr>
+                        <td>Table Data</td>
+                        <td>&rarr;</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                        <td>Table Data</td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
          </div>
       </div>
    </main>
@@ -60,4 +135,5 @@
    <script src="https://cdn.jsdelivr.net/npm/uikit@3.15.10/dist/js/uikit-icons.min.js"></script>
    <script src="app.js"></script>
 </body>
+
 </html>
