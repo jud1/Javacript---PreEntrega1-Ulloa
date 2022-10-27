@@ -1,12 +1,59 @@
 /* CONVERSOR DE DIVISA */
 
-/* new Date(fecha).toLocaleString() */
+/*  */
+/* https://stackoverflow.com/questions/7955965/how-come-json-cant-save-objects-functions */
+
+/* -----------------------------
+------ Definimos las class ------
+----------------------------- */
+
+// Definimos las Class: divisa
+class Divisa {
+   constructor(nombre, abreviatura, valorReferencia, local){
+      this.nombre = nombre
+      this.abreviatura = abreviatura
+      this.valorReferencia = valorReferencia
+      this.local = local
+   }
+}
+// Class para operaciones
+class Operaciones {
+   constructor(monto, entrada, salida, fecha){
+      this.monto = monto
+      this.entrada = entrada
+      this.salida = salida
+      this.fecha = fecha
+   }
+   // [M] Calcula el resultado
+   resultado = () => this.monto*(this.salida.valorReferencia)/(this.entrada.valorReferencia)
+
+   // [M] Para dar el formato deseado de la moneda
+   formatoLocale = (valor, moneda) =>  valor.toLocaleString(moneda.local, {style: 'decimal', currency: moneda.abreviatura})
+   
+   // [M] Crea un string para mostrar
+   resultadoString = () => `
+      ${this.formatoLocale(this.monto, this.entrada)} ${this.entrada.abreviatura.toLowerCase()} 
+         = 
+      ${this.formatoLocale(this.resultado(), this.salida)} ${this.salida.abreviatura.toLowerCase()} 
+   `
+   
+}
 
 // Definimos el numero maximo de resulados que pueda guardar el historial, por qué? porque puedo.
 const maxHistorial = 20
 
-// Consultamos si existe data dentro de nuestro local storage
-const historial = JSON.parse(localStorage.getItem('historial')) ?? []
+// Desgraciadamente localstorage no guarda nuestros metodos, a continuacion tendremos que verificar si el objeto historial del local storage es nullish, si trae data lo traeremos y mediante una iteracion (map) armaremos un nuevo array con los objetos class con sus metodos dentro
+const historialLocaleStorage = JSON.parse(localStorage.getItem('historial')) ?? []
+
+const historial = historialLocaleStorage.length > 0 ? historialLocaleStorage.map(
+   (item) => new Operaciones (
+      item.monto,
+      item.entrada,
+      item.salida,
+      item.fecha
+   )
+) : []
+
 
 // [Imprimir en el DOM] Funcion para poder detonarla al iniciar la app si es que hay resultados de sesiones anteriores
 const imprimirHistorial = lista => {
@@ -18,26 +65,28 @@ const imprimirHistorial = lista => {
 
    // For each en todos los resulados
    for(const item of lista) {
-      console.log(item)
+      // Desestructuración  
+      const {monto, entrada, salida, fecha, resultado, formatoLocale} = item
+
       // ------------------------- [PRINT] -------------------------
       // <tr> padre
       const tr = document.createElement('tr')
       
       // <td> hijo entrada
       const tdEntrada = (document.createElement('td'))
-      tdEntrada.textContent = `a` 
+      tdEntrada.textContent = `${formatoLocale(monto, entrada)} ${entrada.abreviatura.toLowerCase()}`
       // <td> hijo entrada
       const tdFlecha = (document.createElement('td'))
       tdFlecha.innerHTML = '&rarr;' 
       // <td> hijo salida
       const tdSalida = (document.createElement('td'))
-      tdSalida.textContent = `c` 
+      tdSalida.textContent = `${formatoLocale(resultado(), salida)} ${salida.abreviatura.toLowerCase()}`
       // <td> hijo conversion
       const tdconversion = (document.createElement('td'))
-      tdconversion.textContent = `d` 
+      tdconversion.textContent =  `*${(salida.valorReferencia/entrada.valorReferencia).toLocaleString('es-CL', {minimumFractionDigits: 0, maximumFractionDigits: 4})}`
       // <td> hijo fecha
       const tdFechainv = (document.createElement('td'))
-      tdFechainv.textContent = `e` 
+      tdFechainv.textContent = new Date(fecha).toLocaleString() 
       // <td> hijo accion
       const tdAccion = (document.createElement('td'))
       tdAccion.textContent = `f` 
@@ -52,40 +101,9 @@ const imprimirHistorial = lista => {
    }) */
 
 }
+
 // Ejecutamos la fn anterior solo si el array es mayor a 0 (al iniciar la app)
 historial.length > 0 && imprimirHistorial(historial)
-
-// Class para los objetos divisa
-class Divisa {
-   constructor(nombre, abreviatura, valorReferencia, local){
-      this.nombre = nombre
-      this.abreviatura = abreviatura
-      this.valorReferencia = valorReferencia
-      this.local = local
-   }
-}
-// Class para los objetos operaciones
-class Operaciones {
-   constructor(monto, entrada, salida, fecha){
-      this.monto = monto
-      this.entrada = entrada
-      this.salida = salida
-      this.fecha = fecha
-   }
-
-   // Calcula el resultado
-   resultado = () => this.monto*(this.salida.valorReferencia)/(this.entrada.valorReferencia)
-
-   // Para dar el formato deseado de la moneda
-   formatoLocale = (valor, moneda) =>  valor.toLocaleString(moneda.local, {style: 'currency', currency: moneda.abreviatura})
-   
-   // Crea un string para mostrar
-   resultadoString = () => `
-      ${this.formatoLocale(this.monto, this.entrada)} ${this.entrada.abreviatura.toLowerCase()} 
-         = 
-      ${this.formatoLocale(this.resultado(), this.salida)} ${this.salida.abreviatura.toLowerCase()} 
-   `
-}
 
 // Array de objetos para aplicar metodos (basado en la clase anterior)
 const divisas = [
@@ -95,8 +113,8 @@ const divisas = [
 ]
 
 // Funcion para buscar la divisa mediante un find en el array de objetos
-const buscarObjDivisa = function(abbreviatura){
-   return divisas.filter( (el) => el.abreviatura.includes(abbreviatura) )
+const buscarObjDivisa = function(abreviatura){
+   return divisas.filter( (el) => el.abreviatura.includes(abreviatura) )
 }
 
 // Funcion de ejecucion del programa
@@ -153,13 +171,7 @@ const accion = evt => {
 }
 
 // Event listener para escuchar el boton y al click dar el resultado
-document.getElementById('botonTransformar').addEventListener('click', function(evt){
-   accion(evt)
-})
+document.getElementById('botonTransformar').addEventListener('click', evt => accion(evt) )
 
 // Tambien escuchamos al enter 
-window.addEventListener('keyup', function(evt){
-   if (evt.key === 'Enter' || evt.keyCode === 13) {
-      accion(evt)
-   }
-})
+window.addEventListener('keyup', evt => evt.key === 'Enter' && accion(evt) )
