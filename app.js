@@ -31,8 +31,8 @@ document.getElementById('botonTransformar').addEventListener('click', evt => {
    const divisas = JSON.parse(localStorage.getItem('divisas')) 
       ?? { timestamp: null, list: [] }
 
-   // Comprobar si existe data en el local Storage o mas antigua que 1 hora, de lo contrario consumir api
-   if( divisas.timestamp === null || moment().diff(moment.unix(divisas.timestamp), 'hours')>=1 ) { 
+   // Comprobar si existe data en el local Storage o mas antigua que x tiempo, de lo contrario consumir api
+   if( divisas.timestamp === null || moment().diff(moment(divisas.timestamp), 'minutes')>=180 ) { 
       
 
       // Setear opciones de la API
@@ -69,3 +69,4 @@ document.getElementById('botonTransformar').addEventListener('click', evt => {
       conversorPrincipal(evt, divisas.list, historial)
    }  
 })
+console.log()

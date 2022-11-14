@@ -60,8 +60,6 @@ const conversorPrincipal = (evt, divisas, historial) => {
       // Date de la accion
       Date.now() 
    )
-
-   // NEXT ---> IF ELSE DE Local Storage de las divisas
    
    // Si el input es erroneo
    if (operacion.monto === "" || operacion.monto <= 0){
@@ -82,6 +80,7 @@ const conversorPrincipal = (evt, divisas, historial) => {
       /*------------------------------- 
       Comenzamos con el historial 
       -------------------------------*/
+      
       // Definimos el numero maximo de resulados que pueda guardar el historial, por qué? porque puedo.
       const maxHistorial = 20
 
